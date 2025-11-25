@@ -1,0 +1,17 @@
+services:
+  bot:
+    build:
+      context: .
+    env_file:
+      - .env
+    environment:
+      BOT_OUTPUT_FOLDER: /data/downloads
+      BOT_COOKIES_FILE: /data/cookies.txt
+      BOT_DENO_PATH: /usr/local/bin/deno
+      BOT_MAX_FILESIZE: 10000000000
+      BOT_YTDLP_VERBOSE: "1"
+      BOT_NEXTCLOUD_UPLOAD_FOLDER: Telegram
+      BOT_NETRC: "0"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
