@@ -1,10 +1,18 @@
 from urllib.parse import urlparse, quote, urlencode
 import datetime
-from typing import Any, Optional
+from typing import Any, Optional, cast
 from pathlib import Path
 import subprocess
 import telebot
-import config
+try:
+    import config  # type: ignore
+except ModuleNotFoundError:
+    import config_defaults as config
+
+if not getattr(config, 'token', None):
+    raise ValueError("BOT_TOKEN is required. Set BOT_TOKEN env var or supply config.py.")
+
+BOT_TOKEN = cast(str, config.token)
 import yt_dlp
 from yt_dlp.utils import DownloadError
 import re
@@ -13,7 +21,7 @@ from telebot.apihelper import ApiTelegramException
 import time
 import requests
 
-bot = telebot.TeleBot(config.token)
+bot = telebot.TeleBot(BOT_TOKEN)
 last_edited = {}
 SUPPORTED_YT_HOSTS = {
     'www.youtube.com',

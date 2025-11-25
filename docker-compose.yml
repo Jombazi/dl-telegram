@@ -1,7 +1,6 @@
 services:
   bot:
-    build:
-      context: .
+    image: ghcr.io/edisonjwa/yt-dlp-telegram:latest
     env_file:
       - .env
     environment:
