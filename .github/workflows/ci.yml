@@ -54,11 +54,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Derive lowercase owner
+        id: registry_vars
+        run: echo "owner_lc=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/yt-dlp-telegram:latest
+          tags: ghcr.io/${{ steps.registry_vars.outputs.owner_lc }}/yt-dlp-telegram:latest
           build-args: |
             DENO_VERSION=v2.5.6
