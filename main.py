@@ -18,6 +18,7 @@ from yt_dlp.utils import DownloadError
 import re
 from telebot.util import quick_markup
 from telebot.apihelper import ApiTelegramException
+from telebot import apihelper
 import time
 import requests
 
@@ -49,7 +50,10 @@ LOGIN_HELP_TEXT = (
     "Send the exported text file contents back to me using /login."
 )
 BLACKLISTED_DOMAINS = {d.strip() for d in getattr(config, 'blacklisted_domains', '').split(',') if d.strip()}  # Load from config or .env
-
+TELEGRAM_CUSTOM_API_URL = getattr(config, 'telegram_custom_api_url', None)
+CUSTOM_TELEGRAM_API_URL = getattr(config, 'telegram_custom_api_url', None)
+if TELEGRAM_CUSTOM_API_URL:
+    apihelper.API_URL = TELEGRAM_CUSTOM_API_URL.strip()
 
 def nextcloud_enabled() -> bool:
     return bool(
@@ -643,4 +647,10 @@ def handle_private_messages(message):
         log(message, text, 'video')
         download_video(message, text)
 
-bot.infinity_polling()
+if __name__ == '__main__':
+    while True:
+        try:
+            bot.infinity_polling(timeout=20, long_polling_timeout=20)
+        except Exception as e:
+            print(f"[polling error] {e!r}")
+            time.sleep(2)

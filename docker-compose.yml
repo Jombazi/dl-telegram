@@ -11,6 +11,32 @@ services:
       BOT_YTDLP_VERBOSE: "1"
       BOT_NEXTCLOUD_UPLOAD_FOLDER: Telegram
       BOT_NETRC: "0"
+      BOT_CUSTOM_TELEGRAM_API_URL: "http://api-server:8081/bot{0}/{1}"
     volumes:
       - ./data:/data
     restart: unless-stopped
+
+  api-server:
+    image: ghcr.io/lukaszraczylo/tdlib-telegram-bot-api-docker/telegram-api-server:latest
+    environment:
+      # get this values from https://core.telegram.org/api/obtaining_api_id
+      TELEGRAM_API_ID: YOUR_API_ID_HERE
+      TELEGRAM_API_HASH: YOUR_API_HASH_HERE
+    command:
+      # set working directory for files 
+      - --dir=/var/lib/telegram-bot-api
+      # enable logging, disable in production
+      #- --verbosity=2
+    volumes:
+      # mount volume for persistance of files
+      - ./server-data:/var/lib/telegram-bot-api 
+#    container_name: telegram-bot-api
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
