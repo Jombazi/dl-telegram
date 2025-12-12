@@ -677,9 +677,11 @@ def handle_private_messages(message):
         download_video(message, text)
 
 if __name__ == '__main__':
+    import traceback
     while True:
         try:
             bot.infinity_polling(timeout=20, long_polling_timeout=20)
         except Exception as e:
             print(f"[polling error] {e!r}")
+            traceback.print_exc()
             time.sleep(2)
